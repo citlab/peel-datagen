@@ -112,6 +112,7 @@ class ClusterGenerator(master: String, dop: Int, N: Int, output: String, input: 
     val ppc = N / K // number of points per center
     val tDim = this.dim
     val seed = this.SEED
+    val k = K
 
     val csv = sc.textFile(input).map { line =>
       line.split(",").map(_.toDouble)
@@ -121,12 +122,12 @@ class ClusterGenerator(master: String, dop: Int, N: Int, output: String, input: 
 
     val dataset = sc.parallelize(0 until dop, dop).flatMap(i => {
       val partitionStart = n * i // the index of the first point in the current partition
-      val randStart = partitionStart * tDim // the start for the prng
+      val randStart = partitionStart * (tDim + 1) // the start for the prng: one points requires tDim + randoms
       val rand = new RanHash(seed)
       rand.skipTo(seed + randStart)
 
       for (j <- partitionStart to (partitionStart + n)) yield {
-        val centroidID = j / ppc
+        val centroidID = rand.nextInt(k)
         val centroid = centroids.value(centroidID)
         val id = centroid(0).toInt
         val sigma = centroid(1)

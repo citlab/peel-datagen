@@ -7,11 +7,11 @@ class SparkClusterGeneratorTest extends AssertionsForJUnit {
 
   @Test def integrationTest() {
     val input = getClass.getResource("/clusterCenters.csv")
-    val output = "data/clusterGeneratorOutput"
+    val output = "/tmp/data/clusterGeneratorOutput"
     val master = "local[3]"
     // N should have a common demnominator with K and dop
     val dop = 3
-    val N = 99
+    val N = 9999
     val K = 3
     val dim = 3
 
